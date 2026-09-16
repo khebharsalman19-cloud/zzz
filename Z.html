@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW M-PERFORMANCE // STEALTH LUXURY EDITION</title>
+    
+    <!-- Ultra-Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Canvas Confetti JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #07080a;
+            --carbon-card: #0e1117;
+            --accent-gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.25);
+            --m-red: #c026d3;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --border-dim: rgba(255, 255, 255, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Subtle Ambient Dark Canvas */
+        #stealthCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Sleek Minimal Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 7%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(7, 8, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .brand-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: 5px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .m-stripes {
+            display: flex;
+            gap: 3px;
+            height: 14px;
+            transform: skewX(-18deg);
+        }
+
+        .stripe { width: 5px; height: 100%; border-radius: 1px; }
+        .s-1 { background: #2563eb; }
+        .s-2 { background: #7c3aed; }
+        .s-3 { background: #dc2626; }
+
+        .stealth-status {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            letter-spacing: 3px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 6px 16px;
+            border-radius: 4px;
+            background: rgba(212, 175, 55, 0.03);
+            text-transform: uppercase;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 140px 20px 80px;
+            position: relative;
+        }
+
+        .sub-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 7px;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+
+        .main-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.8rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: 4px;
+            background: linear-gradient(180deg, #FFFFFF 40%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .name-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2.2rem, 6vw, 4.5rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 12px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .hero-desc {
+            max-width: 650px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 45px;
+            font-weight: 300;
+        }
+
+        /* Minimal Speedo Dashboard */
+        .speedo-card {
+            background: rgba(14, 17, 23, 0.7);
+            border: 1px solid var(--border-dim);
+            padding: 20px 40px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .speedo-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
+            min-width: 110px;
+        }
+
+        .speedo-label {
+            text-align: left;
+            border-left: 1px solid var(--border-dim);
+            padding-left: 15px;
+        }
+
+        .speedo-label div {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            letter-spacing: 2px;
+        }
+
+        .speedo-label span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Launch Button */
+        .btn-stealth {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            padding: 20px 48px;
+            color: #000;
+            background: var(--accent-gold);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            box-shadow: 0 0 30px var(--gold-glow);
+            transform: skewX(-10deg);
+        }
+
+        .btn-stealth:hover {
+            background: #fff;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.4);
+            transform: skewX(-10deg) translateY(-3deg);
+        }
+
+        /* Gallery Section */
+        .gallery-header {
+            text-align: center;
+            margin: 110px 0 60px;
+        }
+
+        .gallery-header h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            letter-spacing: 6px;
+            color: #fff;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            padding: 0 7% 120px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stealth-card {
+            position: relative;
+            height: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--carbon-card);
+            border: 1px solid var(--border-dim);
+            transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+        }
+
+        .stealth-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-8deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+        }
+
+        .stealth-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8) contrast(1.1);
+            transition: transform 0.7s ease, filter 0.7s ease;
+        }
+
+        .stealth-card:hover img {
+            transform: scale(1.06);
+            filter: brightness(0.95) contrast(1.15);
+        }
+
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(7, 8, 10, 0.95) 100%);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .card-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.35rem;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        /* Statement Banner */
+        .statement-banner {
+            background: rgba(14, 17, 23, 0.8);
+            border-top: 1px solid var(--border-dim);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 100px 8%;
+            text-align: center;
+        }
+
+        .statement-banner p {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            color: #fff;
+            line-height: 1.5;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .statement-banner span {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-gold);
+            letter-spacing: 5px;
+            font-size: 0.85rem;
+        }
+
+        /* Modal Popup */
+        .stealth-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 4, 6, 0.92);
+            backdrop-filter: blur(25px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--carbon-card);
+            border: 1px solid var(--accent-gold);
+            border-radius: 8px;
+            padding: 50px 40px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        .modal-content h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: 35px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 45px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            border-top: 1px solid var(--border-dim);
+        }
+
+        footer span { color: var(--accent-gold); }
+    </style>
+</head>
+<body>
+
+    <!-- Dark Ambient Canvas -->
+    <canvas id="stealthCanvas"></canvas>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="brand-logo">
+            <div class="m-stripes">
+                <div class="stripe s-1"></div>
+                <div class="stripe s-2"></div>
+                <div class="stripe s-3"></div>
+            </div>
+            ZINNIE // M-POWER
+        </div>
+        <div class="stealth-status">MODE: STEALTH PERF</div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="sub-tag">// Ultra-Aesthetic Engine</div>
+        <h1 class="main-title">HAPPY BIRTHDAY</h1>
+        <h2 class="name-title">Z I N N I E</h2>
+        
+        <p class="hero-desc">
+            Defined by high speed, sharp intellect, effortless aesthetic, and pure perfection. 
+            Welcome to the elite class.
+        </p>
+
+        <!-- Speedometer -->
+        <div class="speedo-card">
+            <div class="speedo-num" id="speedValue">0</div>
+            <div class="speedo-label">
+                <div>KM / H</div>
+                <span>TOP SPEED</span>
+            </div>
+        </div>
+
+        <button class="btn-stealth" onclick="triggerIgnition()">UNLEASH POWER ⚡</button>
+    </section>
+
+    <!-- Gallery Section -->
+    <div class="gallery-header">
+        <h3>THE <span>VISUAL</span> ARCHIVE</h3>
+    </div>
+
+    <section class="gallery-grid">
+        <div class="stealth-card">
+            <img src="C:/Users/LENOVO/Downloads/photo1.jpg.jpeg" alt="Zinnie Aesthetic 1">
+            <div class="card-overlay">
+                <div class="card-tag">// Sunflower Edition</div>
+                <div class="card-title">Pure Elegance</div>
+            </div>
+        </div>
+
+        <div class="stealth-card">
+            <img src="C:/Users/LENOVO/Downloads/photo2.jpg.jpeg" alt="Zinnie Aesthetic 2">
+            <div class="card-overlay">
+                <div class="card-tag">// Desi Glam</div>
+                <div class="card-title">Attitude & Grace</div>
+            </div>
+        </div>
+
+        <div class="stealth-card">
+            <img src="C:/Users/LENOVO/Downloads/photo3.jpg.jpeg" alt="Zinnie Aesthetic 3">
+            <div class="card-overlay">
+                <div class="card-tag">// High Contrast</div>
+                <div class="card-title">Unmatched Vibe</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statement Banner -->
+    <section class="statement-banner">
+        <p>"Fast machines, sharp intelligence, high aesthetic, and zero compromise."</p>
+        <span>// THE ZINNIE STANDARD</span>
+    </section>
+
+    <footer>
+        Engineered with 💻 by BCA Crew | <span>HAPPY BIRTHDAY ZINNIE 🔥</span>
+    </footer>
+
+    <!-- Wish Modal -->
+    <div class="stealth-modal" id="wishModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h3>🏎️ MAXIMUM ELEVATION</h3>
+            <p>
+                To the girl who drives her own lane with maximum precision and elegance. 
+                May your journey ahead be filled with luxury, power, and everlasting success! ✨🔥
+            </p>
+            <button class="btn-stealth" style="width: 100%;" onclick="closeModal()">APPROVED 🔥</button>
+        </div>
+    </div>
+
+    <script>
+        // Smooth Dark Ambient Canvas
+        const canvas = document.getElementById('stealthCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedY = -(Math.random() * 0.4 + 0.1);
+                this.opacity = Math.random() * 0.4 + 0.1;
+            }
+            update() {
+                this.y += this.speedY;
+                if (this.y < 0) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')';
+                ctx.fill();
+            }
+        }
+
+        let particles = [];
+        for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // Engine Audio Synthesizer
+        function playEngineSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(50, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 1.2);
+                osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 2.5);
+
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.3, audioCtx.currentTime + 1.2);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 2.5);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 2.5);
+            } catch(e) { console.log(e); }
+        }
+
+        // Ignition & Launch Logic
+        function triggerIgnition() {
+            playEngineSound();
+
+            let speed = 0;
+            const speedEl = document.getElementById('speedValue');
+
+            const timer = setInterval(() => {
+                speed += Math.floor(Math.random() * 15) + 10;
+                if (speed >= 320) {
+                    speed = 320;
+                    clearInterval(timer);
+
+                    confetti({
+                        particleCount: 100,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#d4af37', '#ffffff', '#7c3aed']
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById('wishModal').style.display = 'flex';
+                    }, 300);
+                }
+                speedEl.innerText = speed;
+            }, 50);
+        }
+
+        function closeModal() {
+            document.getElementById('wishModal').style.display = 'none';
+            document.getElementById('speedValue').innerText = "0";
+        }
+    </script>
+</body>
+</html>
